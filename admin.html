@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Kelola Tim & Data — Kitab Roastery</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --ground:#EDF0EA; --surface:#FBFCF9; --raised:#FFFFFF; --sunk:#E4E8DF;
+  --ink:#151A16; --ink-2:#5A655C; --ink-3:#8B958C; --line:#DCE1D8; --line-2:#C6CEC1;
+  --accent:#A8461D; --accent-ink:#FFFFFF; --accent-soft:#F5E6DE;
+  --pos:#2B6A4A; --pos-soft:#DFEDE4; --neg:#A3282A; --neg-soft:#F6E1E1; --warn:#88580A; --warn-soft:#F4EAD3;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif; --mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --ground:#111410; --surface:#181C16; --raised:#1F241C; --sunk:#0C0F0B; --ink:#E9EDE6; --ink-2:#9CA69B; --ink-3:#6C766B;
+    --line:#2B3128; --line-2:#3B4237; --accent:#EE8A5C; --accent-ink:#1A1006; --accent-soft:#372114;
+    --pos:#77C296; --pos-soft:#17301F; --neg:#EE8181; --neg-soft:#361B1C; --warn:#DBA84A; --warn-soft:#332811; }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font:14px/1.55 var(--sans);-webkit-font-smoothing:antialiased}
+[hidden]{display:none!important}
+header{display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--surface);border-bottom:1px solid var(--line);flex-wrap:wrap}
+.logo{width:32px;height:32px;border-radius:8px;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font:600 15px var(--mono);flex:none}
+header h1{font-size:16px;margin:0;flex:1;min-width:160px}
+header a{color:var(--accent);font-weight:600;text-decoration:none;font-size:13px}
+main{max-width:860px;margin:0 auto;padding:20px 16px 60px;display:flex;flex-direction:column;gap:16px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px}
+.card h2{font-size:15px;margin:0 0 4px}
+.redup{color:var(--ink-2);font-size:13px;margin:0 0 12px}
+.baris{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+input,select,button{font:inherit;color:inherit}
+input[type=email],select{padding:9px 10px;border:1px solid var(--line-2);border-radius:9px;background:var(--raised);min-width:0}
+input[type=email]{flex:1 1 220px}
+.btn{padding:9px 14px;border-radius:9px;border:1px solid var(--line-2);background:var(--raised);font-weight:600;cursor:pointer}
+.btn.utama{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.bahaya{color:var(--neg)}
+.btn:disabled{opacity:.5;cursor:default}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line)}
+th{font:500 10.5px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+td.em{font-family:var(--mono);font-size:12px;word-break:break-all}
+.tabel{overflow-x:auto}
+.status{margin-top:10px;padding:10px 12px;border-radius:9px;font-size:13px}
+.status.ok{background:var(--pos-soft);color:var(--pos)}
+.status.galat{background:var(--neg-soft);color:var(--neg)}
+.status.info{background:var(--warn-soft);color:var(--warn)}
+.peran{font-size:12px;color:var(--ink-2)}
+ul.peran-list{margin:0 0 12px;padding-left:18px;color:var(--ink-2);font-size:13px}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">R</div>
+  <h1>Kelola Tim & Data</h1>
+  <a href="index.html">← Kembali ke Kitab Roastery</a>
+  <span id="akunInfo" class="peran"></span>
+  <button class="btn" id="tombolKeluar" type="button">Keluar</button>
+</header>
+<main id="isi" hidden>
+  <section class="card">
+    <h2>Anggota tim</h2>
+    <p class="redup">Hanya akun Google yang ada di daftar ini yang bisa membuka Kitab Roastery. Orang lain yang membuka alamat situs akan diminta masuk dan ditolak.</p>
+    <ul class="peran-list">
+      <li><b>Editor</b> — bisa mencatat dan mengubah transaksi, stok, produk.</li>
+      <li><b>Pembaca</b> — hanya bisa melihat laporan dan data.</li>
+    </ul>
+    <form class="baris" id="formAnggota">
+      <input type="email" id="emailBaru" placeholder="email.google@gmail.com" required autocomplete="off">
+      <select id="peranBaru"><option value="editor">Editor</option><option value="viewer">Pembaca</option></select>
+      <button class="btn utama" type="submit">Tambah</button>
+    </form>
+    <div id="statusAnggota"></div>
+    <div class="tabel" style="margin-top:12px">
+      <table><thead><tr><th>Email</th><th>Peran</th><th></th></tr></thead><tbody id="daftarAnggota"></tbody></table>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Impor data</h2>
+    <p class="redup">Masukkan berkas cadangan <b>.json</b> — dari Kitab Roastery versi lama (Pengaturan → Ekspor cadangan) atau berkas <b>kitab-roastery-cadangan-*.json</b>. Transaksi dengan ID yang sama akan diganti oleh versi di berkas; transaksi lain di database tidak dihapus.</p>
+    <div class="baris"><input type="file" id="berkasImpor" accept=".json,application/json"></div>
+    <div id="pratinjau"></div>
+    <div class="baris" style="margin-top:10px"><button class="btn utama" id="tombolImpor" type="button" disabled>Impor ke database</button></div>
+    <div id="statusImpor"></div>
+  </section>
+
+  <section class="card">
+    <h2>Cadangan</h2>
+    <p class="redup">Unduh seluruh isi database sebagai berkas .json. Lakukan minimal sebulan sekali dan simpan di Google Drive.</p>
+    <button class="btn" id="tombolCadangan" type="button">Unduh cadangan (.json)</button>
+    <div id="statusCadangan"></div>
+  </section>
+</main>
+<script type="module" src="js/admin.js"></script>
+</body>
+</html>

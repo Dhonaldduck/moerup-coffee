@@ -1,0 +1,11 @@
+{
+  "indexes": [],
+  "fieldOverrides": [
+    { "collectionGroup": "ledger", "fieldPath": "txns", "indexes": [] },
+    { "collectionGroup": "master", "fieldPath": "greenbeans", "indexes": [] },
+    { "collectionGroup": "master", "fieldPath": "supplies", "indexes": [] },
+    { "collectionGroup": "master", "fieldPath": "skus", "indexes": [] },
+    { "collectionGroup": "master", "fieldPath": "assets", "indexes": [] },
+    { "collectionGroup": "master", "fieldPath": "customers", "indexes": [] }
+  ]
+}

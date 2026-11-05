@@ -1,0 +1,49 @@
+rules_version = '2';
+
+// =====================================================================
+//  ATURAN KEAMANAN KITAB ROASTERY — salin seluruh isi berkas ini ke
+//  Firebase Console → Firestore Database → Rules → Publish.
+//
+//  • Hanya akun Google yang terdaftar yang bisa membuka data.
+//  • Pemilik  : baca, tulis, kelola anggota tim.
+//  • Editor   : baca & tulis transaksi/katalog/pengaturan.
+//  • Pembaca  : hanya baca.
+//  • Orang lain (walau punya tautan situs): tidak bisa membaca apa pun.
+// =====================================================================
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ▼▼▼ GANTI dengan email Google pemilik (huruf kecil), sama dengan js/firebase-config.js
+    function emailPemilik() { return "dhona.aribah@gmail.com"; }
+    // ▲▲▲
+
+    function masuk() {
+      return request.auth != null
+        && request.auth.token.email is string
+        && request.auth.token.email_verified == true;
+    }
+    function emailSaya() { return request.auth.token.email.lower(); }
+    function pemilik()   { return masuk() && emailSaya() == emailPemilik(); }
+    function dokAnggota() { return /databases/$(database)/documents/members/$(emailSaya()); }
+    function anggota()   { return masuk() && exists(dokAnggota()); }
+    function editor()    { return anggota() && get(dokAnggota()).data.role == "editor"; }
+
+    function bolehBaca()  { return pemilik() || anggota(); }
+    function bolehTulis() { return pemilik() || editor(); }
+
+    // Data pembukuan
+    match /ledger/{bulan} { allow read: if bolehBaca(); allow write: if bolehTulis(); }
+    match /master/{id}    { allow read: if bolehBaca(); allow write: if bolehTulis(); }
+    match /diag/{id}      { allow read: if bolehBaca(); allow write: if bolehTulis(); }
+
+    // Daftar anggota tim: id dokumen = email (huruf kecil).
+    // Anggota hanya bisa melihat dokumen dirinya sendiri; hanya pemilik yang mengelola.
+    match /members/{email} {
+      allow read: if pemilik() || (masuk() && email == emailSaya());
+      allow delete: if pemilik();
+      allow create, update: if pemilik()
+        && request.resource.data.role in ["editor", "viewer"]
+        && email == email.lower();
+    }
+  }
+}

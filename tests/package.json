@@ -1,0 +1,12 @@
+{
+  "name": "moerapp-tests",
+  "private": true,
+  "description": "Uji Moerapp: mesin akuntansi, form, versi web (Firebase tiruan), impor cadangan, dan impor samakan-persis.",
+  "scripts": {
+    "test": "node impor.test.mjs && node smoke.test.js && node web.test.js && node edge.test.js && node form.test.js && node recipe.test.js && node mirror.test.js"
+  },
+  "devDependencies": {
+    "playwright": "^1.47.0",
+    "jspdf": "2.5.1"
+  }
+}
